@@ -1,3 +1,5 @@
-﻿  Test.cpp
-  2D_League.vcxproj -> c:\users\brandon\documents\visual studio 2015\Projects\2D_League\Debug\2D_League.exe
-  2D_League.vcxproj -> c:\users\brandon\documents\visual studio 2015\Projects\2D_League\Debug\2D_League.pdb (Partial PDB)
+﻿  2DLeague.cpp
+c:\users\brandon\documents\visual studio 2015\projects\2d_league\2d_league\2dleague.cpp(62): warning C4715: 'roleSelection': not all control paths return a value
+c:\users\brandon\documents\visual studio 2015\projects\2d_league\2d_league\2dleague.cpp(242): warning C4715: 'GamePlay': not all control paths return a value
+  2D_League.vcxproj -> C:\Users\Brandon\Documents\Visual Studio 2015\Projects\2D_League\Debug\2D_League.exe
+  2D_League.vcxproj -> C:\Users\Brandon\Documents\Visual Studio 2015\Projects\2D_League\Debug\2D_League.pdb (Partial PDB)
