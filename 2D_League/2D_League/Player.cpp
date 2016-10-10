@@ -6,8 +6,7 @@ using namespace std;
 
 
 Player::Player(int selection){
-	m_Turrets = 3;
-	m_Nexus = true;
+
 	m_Gold = 500;
 	m_Status = BASE;
 	
@@ -15,55 +14,55 @@ Player::Player(int selection){
 	switch (selection) {
 	case 0:
 		m_Role = MAGE;
-		m_PokeDmg = VERY_STRONG;
+		m_PokeDmg = (VERY_STRONG * 4) + 20;
 		m_TurretDmg = WEAK;
-		m_PokeResist = AVERAGE;
-		m_MaxHP = AVERAGE;
+		m_PokeResist = AVERAGE * 0.05;
+		m_MaxHP = AVERAGE * 20 + 100;
 		m_Agility = WEAK;
 		break;
 	case 1:
 		m_Role = MARKSMAN;
-		m_PokeDmg = AVERAGE;
+		m_PokeDmg = AVERAGE * 4 + 20;
 		m_TurretDmg = VERY_STRONG;
-		m_PokeResist = AVERAGE;
-		m_MaxHP = VERY_WEAK;
+		m_PokeResist = AVERAGE * 0.05;
+		m_MaxHP = VERY_WEAK * 20 + 100;
 		m_Agility = STRONG;
 		break;
 	case 2:
 		m_Role = SUPPORT;
-		m_PokeDmg = WEAK;
+		m_PokeDmg = WEAK * 4 + 20;
 		m_TurretDmg = VERY_WEAK;
-		m_PokeResist = STRONG;
-		m_MaxHP = VERY_STRONG;
+		m_PokeResist = STRONG * 0.05;
+		m_MaxHP = VERY_STRONG * 20 + 100;
 		m_Agility = AVERAGE;
 		break;
 	case 3:
 		m_Role = TANK;
-		m_PokeDmg = VERY_WEAK;
+		m_PokeDmg = VERY_WEAK * 4 + 20;
 		m_TurretDmg = STRONG;
-		m_PokeResist = VERY_STRONG;
-		m_MaxHP = STRONG;
+		m_PokeResist = VERY_STRONG * 0.05;
+		m_MaxHP = STRONG * 20 + 100;
 		m_Agility = VERY_WEAK;
 		break;
 	case 4:
 		m_Role = ASSASSIN;
-		m_PokeDmg = STRONG;
+		m_PokeDmg = STRONG * 4 + 20;
 		m_TurretDmg = AVERAGE;
-		m_PokeResist = VERY_WEAK;
-		m_MaxHP = WEAK;
+		m_PokeResist = VERY_WEAK * 0.05;
+		m_MaxHP = WEAK * 20 + 100;
 		m_Agility = VERY_STRONG;
 		break;
-	default:
+	case 5:
 		m_Role = FIGHTER;
-		m_PokeDmg = AVERAGE;
+		m_PokeDmg = AVERAGE * 4 + 20;
 		m_TurretDmg = AVERAGE;
-		m_PokeResist = AVERAGE;
-		m_MaxHP = AVERAGE;
+		m_PokeResist = AVERAGE * 0.05;
+		m_MaxHP = AVERAGE * 20 + 100;
 		m_Agility = AVERAGE;
 		break;
 
 	}
-	m_CurrHP = 100;
+	m_CurrHP = m_MaxHP;
 }
 
 int Player::GetRole() {
@@ -74,27 +73,6 @@ int Player::GetStatus() {
 }
 void Player::ChangeStatus(int newStatus) {
 	m_Status = newStatus;
-}
-
-int Player::GetTurretHP() {
-	return m_TurretHP;
-}
-void Player::TurretHit() {
-	m_TurretHP -= 1;
-}
-int Player::GetTurrets() {
-	return m_Turrets;
-}
-void Player::TurretDestroyed() {
-	m_Turrets -= 1;
-}
-
-
-bool Player::HasNexus() {
-	return m_Nexus;
-}
-void Player::NexusDestroyed() {
-	m_Nexus = false;
 }
 
 
@@ -108,8 +86,10 @@ void Player::SpendGold(int itemCost) {
 	m_Gold -= itemCost;
 }
 
-void Player::takeDmg(int amount) {
-	m_CurrHP -= amount;
+void Player::takeDmg(double amount) {
+	m_CurrHP -= amount - amount * m_PokeResist;
+	cout << "Damage dealt: " << amount << endl;
+	cout << "poke resist: " << m_PokeResist << endl;
 	cout << "CURRENT HP: " << m_CurrHP << endl;
 }
 void Player::PrintCurrHP() {
@@ -118,10 +98,10 @@ void Player::PrintCurrHP() {
 int Player::GetMaxHP() {
 	return m_MaxHP;
 }
-int Player::GetPokeDmg() {
+double Player::GetPokeDmg() {
 	return m_PokeDmg;
 }
-int Player::GetPokeResist() {
+double Player::GetPokeResist() {
 	return m_PokeResist;
 }
 int Player::GetTurretDmg() {
@@ -137,10 +117,10 @@ void Player::IncCurrHP(int amount) {
 void Player::IncMaxHP(int amount) {
 	m_MaxHP += amount;
 }
-void Player::IncPokeDmg(int amount) {
+void Player::IncPokeDmg(double amount) {
 	m_PokeDmg += amount;
 }
-void Player::IncPokeResist(int amount) {
+void Player::IncPokeResist(double amount) {
 	m_PokeResist += amount;
 }
 void Player::IncTurretDmg(int amount) {
@@ -151,7 +131,7 @@ void Player::IncAgility(int amount) {
 }
 
 
-void Player::Attack(Player &victim, int amount) {
+void Player::Attack(Player &victim, double amount) {
 	victim.takeDmg(amount);
 }
 

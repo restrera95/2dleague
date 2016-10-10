@@ -1,3 +1,4 @@
+#include "Base.h"
 #include "Player.h"
 #include "2DLeague.h"
 #include <iostream>
@@ -146,7 +147,7 @@ void printBoardM() {
 void printBoardR() {
 	cout <<"0---0                         0---0\n"
 		<< "0   0                  |      0   0\n"
-		<< "0   0                  |     0   0\n"
+		<< "0   0                  |      0   0\n"
 		<< "0   0                 \\|/     0   0\n"
 		<< "0---0     ___   ___   ___     0---0" << endl;
 }
@@ -160,84 +161,129 @@ void printBoard(int position) {
 
 }
 
+void Shop(Player &player) {
+	cout << "Gold Available: " << player.GetGold() << endl << endl;
+	cout << "Welcome to the shop, what would you like to buy?" << endl << endl;
+	cout << "0. Poke damage boost" << endl;
+	cout << "1. Poke resistance boost" << endl;
+	cout << "2. Maximum health" << endl;
+	cout << "3. Movement speed" << endl;
 
-void playTurn(Player &playerMoving, Player &playerIdle, string name, string name2) {
+	int selection;
+	cin >> selection;
+
+	switch (selection){
+
+	case 0:
+		player.IncPokeDmg(4);
+		cout << "Increasing poke damage...\nPlayer poke damage increased by 4 !" << endl;
+		break;
+	case 1:
+		player.IncPokeResist(0.05);
+		cout << "Increasing poke resist...\nPlayer poke resistance increased by 5% !" << endl;
+		break;
+	case 2:
+		player.IncMaxHP(20);
+		cout << "Increasing max HP...\nPlayer max HP increased by 20 !" << endl;
+		break;
+	case 3:
+		player.IncAgility(0);
+		break;
+	}
+	player.SpendGold(500);
+}
+
+void playTurn(Player &playerMoving, Player &playerIdle, Base &movingBase, Base &idleBase, string name, string name2) {
 	system("CLS");
+	cout << name << "'s turn starting." << endl << endl;
 	printBoard(boardPosition);
 
-	cout << name << "'s turn starting." << endl;
 	int actionSelection;
-	//cout << playerMoving.GetStatus();
 
+	//Displays actions depending on where Player is located
 	switch (playerMoving.GetStatus()) {
 	case BASE:
 		cout << "Gold Available: " << playerMoving.GetGold() << endl;
 		cout << "0. Shop" << endl;
 		cout << "1. Walk to lane" << endl;
 		cin >> actionSelection;
+		//OPTIONS AT BASE
 		switch (actionSelection) {
 		case 0:
+			Shop(playerMoving);
 			break;
 		case 1:
 			playerMoving.ChangeStatus(LANE);
 			cout << name <<" is walking to lane" << endl;
-			
-			system("PAUSE");
 			break;
 		}
 		break;
+
 	case LANE:
 		cout << "0. Poke enemy" << endl;
 		cout << "1. Farm minion wave" << endl;
 		cout << "2. Hit Turret" << endl;
+		cout << "3. Recall back to base" << endl;
 		cin >> actionSelection;
+		//OPTIONS IN LANE
 		switch (actionSelection) {
 		case 0:
-			playerMoving.Attack(playerIdle, 20);
-			cout << name2<<" now has "; 
+			playerMoving.Attack(playerIdle, playerMoving.GetPokeDmg());
+			cout << name2 << " now has "; 
 			playerIdle.PrintCurrHP();
 			cout << " health points." << endl;
-			system("PAUSE");
 			break;
 		case 1:
-			boardPosition = 1;
+			if (name == "Player 1") {
+				boardPosition++;
+			}
+			else if (name == "Player 2")
+				boardPosition--;
+			playerMoving.AddGold(100);
+			cout << "+100 Gold" << endl;
 			break;
 		case 2:
-
+			idleBase.Hit();
+			if (idleBase.hasNexus() == false)
+				cout << "Game over baby" << endl;
+			break;
+		case 3:
+			playerMoving.ChangeStatus(BASE);
+			cout << "Recalling to base..." << endl;
 			break;
 		}
 		break;
 	case DEAD:
+		cout << "You've been killed, player skipped" << endl;
 		break;
 	}
+
 	cout << "End of "<< name <<"'s turn." << endl << endl;
+	system("PAUSE");
 }
 
-int GamePlay(Player Player1, Player Player2) {
-	
+int GamePlay(Player &Player1, Player &Player2, Base &p1Base, Base &p2Base) {
 	printBoard(boardPosition);
 	int num1 = 0, num2 = 1;
-	while (Player1.HasNexus() && Player2.HasNexus()) {
+	while (p1Base.hasNexus() == true && p2Base.hasNexus() == true) {
 		
-
+		//Turns alternate as num1 and num2 alternate values
 		if (num1 == 0 && num2 == 1) {
-			playTurn(Player1, Player2, "Player 1", "Player 2");
+			playTurn(Player1, Player2, p1Base, p2Base, "Player 1", "Player 2");
 			num1++;
 			num2--;
-			cout << "Numbers inverted scenario 1" << endl;
 		}
 		else {
-			playTurn(Player2, Player1, "Player 2", "Player 1");
+			playTurn(Player2, Player1, p2Base, p1Base, "Player 2", "Player 1");
 			num1--;
 			num2++;
-			cout << "Numbers inverted scenario 2" << endl;
 		}
 
 	}
 
-	if (Player1.HasNexus() == 0)
+	if (p1Base.hasNexus() == 0)
 		return 1;
-	else if (Player2.HasNexus() == 0)
+	else if (p2Base.hasNexus() == 0)
 		return 0;
 }
 
@@ -245,6 +291,7 @@ int GamePlay(Player Player1, Player Player2) {
 int main() {
 	int selection = StartMenu();
 
+	//Switch statements 
 	switch (selection) {
 	case 1: {
 		printInstructions();
@@ -269,13 +316,19 @@ int main() {
 		system("PAUSE");
 		system("CLS");
 
+		Base p1Base;
+		Base p2Base;
 		Player Player1(p1Role);
 		Player Player2(p2Role);
-
 		int winner;
-		winner = GamePlay(Player1, Player2);
+		winner = GamePlay(Player1, Player2, p1Base, p2Base);
 
-		
+		system("CLS");
+		if (winner == 0)
+			cout << "Player 1 wins!" << endl;
+		else if (winner == 1)
+			cout << "Player 2 wins!" << endl;
+
 		system("PAUSE");
 		return 0;
 		break;
