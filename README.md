@@ -1,3 +1,5 @@
+LOOK AT README IN BLAME VIEW ------------->
+
 ~Sunday Oct 9th, 2016~
 To do:
 1. Validation wherever there is user input
