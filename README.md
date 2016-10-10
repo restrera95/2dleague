@@ -9,3 +9,4 @@ To do:
 5. Implementing in-game time system 
 6. Tweak numbers for player & base attributes
 7. Add more items to shop?
+8. Player should not be able to FARM wave if the wave is under opponents turret
