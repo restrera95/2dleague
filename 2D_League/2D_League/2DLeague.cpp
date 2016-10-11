@@ -1,8 +1,8 @@
+#include <iostream>
+#include <string>
 #include "Base.h"
 #include "Player.h"
 #include "2DLeague.h"
-#include <iostream>
-#include <string>
 
 using namespace std;
 int boardPosition = 0;
@@ -214,54 +214,199 @@ void playTurn(Player &playerMoving, Player &playerIdle, Base &movingBase, Base &
 			break;
 		case 1:
 			playerMoving.ChangeStatus(LANE);
-			cout << name <<" is walking to lane" << endl;
+			cout << name << " is walking to lane" << endl;
 			break;
 		}
 		break;
 
 	case LANE:
-		cout << "0. Poke enemy" << endl;
-		cout << "1. Farm minion wave" << endl;
-		cout << "2. Hit Turret" << endl;
-		cout << "3. Recall back to base" << endl;
-		cin >> actionSelection;
-		//OPTIONS IN LANE
-		switch (actionSelection) {
-		case 0:
-			playerMoving.Attack(playerIdle, playerMoving.GetPokeDmg());
-			cout << name2 << " now has "; 
-			playerIdle.PrintCurrHP();
-			cout << " health points." << endl;
-			if (playerIdle.GetCurrHP() <= 0)
-				playerIdle.ChangeStatus(DEAD);
-			break;
-		case 1:
-			if (name == "Player 1") {
+		// prints different options depending on board position and type
+		// P1_WavePulled()
+		// P1_WavePushed()
+		// P2_WavePulled()
+		// P2_WavePushed() (?)
+
+
+		if (name == "Player 1" && boardPosition == -1) {
+			// P1_WavePulled()
+			cout << "Player 1: Wave is pushed towards you. Cannot attack turret." << endl;
+			cout << "0. Poke enemy" << endl;
+			cout << "1. Farm minion wave" << endl;
+			cout << "2. Recall back to base" << endl;
+
+			cin >> actionSelection;
+			switch (actionSelection) {
+			case 0:
+				playerMoving.Attack(playerIdle, playerMoving.GetPokeDmg());
+				cout << name2 << " now has ";
+				playerIdle.PrintCurrHP();
+				cout << " health points." << endl;
+
+				if (playerIdle.GetCurrHP() <= 0)
+					playerIdle.ChangeStatus(DEAD);
+				break;
+
+			case 1:
 				boardPosition++;
+				playerMoving.AddGold(100);
+				cout << "+100 Gold" << endl;
+				break;
+
+			case 2:
+				playerMoving.ChangeStatus(BASE);
+				cout << "Recalling to base..." << endl;
+				break;
 			}
-			else if (name == "Player 2")
+		}
+
+		else if (name == "Player 1" && boardPosition == 1) {
+			cout << "Player 1: Wave is pushed up to enemy turret. Cannot farm." << endl;
+			cout << "0. Poke enemy" << endl;
+			cout << "1. Hit Turret" << endl;
+			cout << "2. Recall back to base" << endl;
+
+			cin >> actionSelection;
+			switch (actionSelection) {
+			case 0:
+				playerMoving.Attack(playerIdle, playerMoving.GetPokeDmg());
+				cout << name2 << " now has ";
+				playerIdle.PrintCurrHP();
+				cout << " health points." << endl;
+
+				if (playerIdle.GetCurrHP() <= 0)
+					playerIdle.ChangeStatus(DEAD);
+				break;
+
+			case 1:
+				idleBase.Hit();
+				if (idleBase.hasNexus() == false)
+					cout << "Game over baby" << endl;
+				break;
+
+			case 2:
+				playerMoving.ChangeStatus(BASE);
+				cout << "Recalling to base..." << endl;
+				break;
+			}
+		}
+
+		else if (name == "Player 2" && boardPosition == -1) {
+			cout << "Player 2: Wave is pushed up to turret. Cannot farm." << endl;
+			cout << "0. Poke enemy" << endl;
+			cout << "1. Hit Turret" << endl;
+			cout << "2. Recall back to base" << endl;
+
+			cin >> actionSelection;
+			switch (actionSelection) {
+			case 0:
+				playerMoving.Attack(playerIdle, playerMoving.GetPokeDmg());
+				cout << name2 << " now has ";
+				playerIdle.PrintCurrHP();
+				cout << " health points." << endl;
+
+				if (playerIdle.GetCurrHP() <= 0)
+					playerIdle.ChangeStatus(DEAD);
+				break;
+
+			case 1:
+				idleBase.Hit();
+				if (idleBase.hasNexus() == false)
+					cout << "Game over baby" << endl;
+				break;
+
+			case 2:
+				playerMoving.ChangeStatus(BASE);
+				cout << "Recalling to base..." << endl;
+				break;
+			}
+		}
+
+		else if (name == "Player 2" && boardPosition == 1) {
+			cout << "Player 2: Wave is pushed towards you. Cannot attack turret." << endl;
+			cout << "0. Poke enemy" << endl;
+			cout << "1. Farm minion wave" << endl;
+			cout << "2. Recall back to base" << endl;
+
+			cin >> actionSelection;
+			switch (actionSelection) {
+			case 0:
+				playerMoving.Attack(playerIdle, playerMoving.GetPokeDmg());
+				cout << name2 << " now has ";
+				playerIdle.PrintCurrHP();
+				cout << " health points." << endl;
+
+				if (playerIdle.GetCurrHP() <= 0)
+					playerIdle.ChangeStatus(DEAD);
+				break;
+
+			case 1:
 				boardPosition--;
-			playerMoving.AddGold(100);
-			cout << "+100 Gold" << endl;
-			break;
-		case 2:
-			idleBase.Hit();
-			if (idleBase.hasNexus() == false)
-				cout << "Game over baby" << endl;
-			break;
-		case 3:
-			playerMoving.ChangeStatus(BASE);
-			cout << "Recalling to base..." << endl;
-			break;
+				playerMoving.AddGold(100);
+				cout << "+100 Gold" << endl;
+				break;
+
+			case 2:
+				playerMoving.ChangeStatus(BASE);
+				cout << "Recalling to base..." << endl;
+				break;
+			}
+		}
+
+		else {
+			cout << "Wave is normal." << endl;
+			cout << "0. Poke enemy" << endl;
+			cout << "1. Farm minion wave" << endl;
+			cout << "2. Hit Turret" << endl;
+			cout << "3. Recall back to base" << endl;
+
+			cin >> actionSelection;
+			//OPTIONS IN LANE
+			switch (actionSelection) {
+			case 0:
+				playerMoving.Attack(playerIdle, playerMoving.GetPokeDmg());
+				cout << name2 << " now has ";
+				playerIdle.PrintCurrHP();
+				cout << " health points." << endl;
+
+				if (playerIdle.GetCurrHP() <= 0)
+					playerIdle.ChangeStatus(DEAD);
+				break;
+
+			case 1:
+				if (name == "Player 1") {
+					boardPosition++;
+				}
+				else {
+					boardPosition--;
+				}
+				playerMoving.AddGold(100);
+				cout << "+100 Gold" << endl;
+				break;
+
+			case 2:
+				idleBase.Hit();
+				if (idleBase.hasNexus() == false)
+					cout << "Game over baby" << endl;
+				break;
+
+			case 3:
+				playerMoving.ChangeStatus(BASE);
+				cout << "Recalling to base..." << endl;
+				break;
+			}
 		}
 		break;
+	
+
 	case DEAD:
+		cout << "You killed yourself?" << endl;
 		cout << "You've been killed, your turn is skipped." << endl;
 		playerMoving.ChangeStatus(BASE);
 		break;
 	}
 
-	cout << "End of "<< name <<"'s turn." << endl << endl;
+	cout << "End of " << name <<"'s turn." << endl << endl;
+
 	system("PAUSE");
 }
 
@@ -339,7 +484,7 @@ int main() {
 		return 0;
 		break;
 	}
-	}
+}
 	
 	
 	/*
