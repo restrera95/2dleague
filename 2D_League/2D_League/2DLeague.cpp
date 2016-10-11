@@ -232,6 +232,8 @@ void playTurn(Player &playerMoving, Player &playerIdle, Base &movingBase, Base &
 			cout << name2 << " now has "; 
 			playerIdle.PrintCurrHP();
 			cout << " health points." << endl;
+			if (playerIdle.GetCurrHP() <= 0)
+				playerIdle.ChangeStatus(DEAD);
 			break;
 		case 1:
 			if (name == "Player 1") {
@@ -254,7 +256,8 @@ void playTurn(Player &playerMoving, Player &playerIdle, Base &movingBase, Base &
 		}
 		break;
 	case DEAD:
-		cout << "You've been killed, player skipped" << endl;
+		cout << "You've been killed, your turn is skipped." << endl;
+		playerMoving.ChangeStatus(BASE);
 		break;
 	}
 
@@ -296,7 +299,6 @@ int main() {
 	case 1: {
 		printInstructions();
 		system("PAUSE");
-		break;
 	}
 	case 2: {
 		int p1Role, p2Role;

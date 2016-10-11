@@ -73,6 +73,8 @@ int Player::GetStatus() {
 }
 void Player::ChangeStatus(int newStatus) {
 	m_Status = newStatus;
+	if (m_Status == BASE)
+		m_CurrHP = m_MaxHP;
 }
 
 
@@ -94,6 +96,9 @@ void Player::takeDmg(double amount) {
 }
 void Player::PrintCurrHP() {
 	cout << m_CurrHP << "/" << m_MaxHP;
+}
+int Player::GetCurrHP() {
+	return m_CurrHP;
 }
 int Player::GetMaxHP() {
 	return m_MaxHP;

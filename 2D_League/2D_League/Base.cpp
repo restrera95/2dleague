@@ -9,10 +9,6 @@ Base::Base(){
 	m_NexusHP = 10;
 
 	currStruct = &m_turretOneHP;
-	cout << "-Inside constructor-" << endl;
-	cout << &m_turretOneHP << endl;
-	cout << currStruct << endl;
-	system("PAUSE");
 }
 
 void Base::Hit() {

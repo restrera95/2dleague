@@ -30,6 +30,7 @@ public:
 	void PrintCurrHP();
 
 	//Accessors for player's stats
+	int GetCurrHP();
 	int GetMaxHP();
 	double GetPokeDmg();
 	double GetPokeResist();
